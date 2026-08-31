@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { HealthCheck } from '@nestjs/terminus';
-import { ReadinessService } from './readiness.service';
+import { ReadinessService } from '../../health/readiness.service';
 
 
 @Controller('ready')

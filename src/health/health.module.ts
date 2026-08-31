@@ -1,9 +1,9 @@
 import {Module} from '@nestjs/common';
 import {TerminusModule} from '@nestjs/terminus';
 
-import { HealthController } from './health.controller';
+import { HealthController } from '../presentation/controllers/health.controller';
 import { HealthService } from './health.service';
-import { ReadinessController } from './readiness.controller'
+import { ReadinessController } from '../presentation/controllers/readiness.controller'
 import { ReadinessService } from './readiness.service';
 
 
