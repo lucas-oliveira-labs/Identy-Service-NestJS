@@ -23,7 +23,6 @@ export class UsersRepository {
             id: user.id,
             email: user.email,
             name: user.name,
-            password: user.password,
             status: user.status,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
@@ -45,7 +44,6 @@ export class UsersRepository {
             id:user.id,
             email: user.email,
             name: user.name,
-            password: user.password,
             status: user.status,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
@@ -57,7 +55,6 @@ export class UsersRepository {
             data: {
                 email,
                 name,
-                password,
                 status: 'ACTIVE',
             },
         });
@@ -65,7 +62,6 @@ export class UsersRepository {
         return new User({
             id: user.id,
             email: user.email,
-            password: user.password,
             name: user.name,
             status: user.status,
             createdAt: user.createdAt,
@@ -81,7 +77,6 @@ export class UsersRepository {
             data: {
                 email,
                 name,
-                password,
                 status: 'UPDATED',
             },
         });
@@ -90,7 +85,6 @@ export class UsersRepository {
             id: user.id,
             email: user.email,
             name: user.name,
-            password: user.password,
             status: user.status,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,

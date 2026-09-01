@@ -10,7 +10,7 @@ export class UserCredentialsRepository {
         userId: number,
         password: string,
     ): Promise<UserCredential> {
-        return await this.prisma.userCredential.create({
+        return this.prisma.userCredential.create({
             data: {
                 userId,
                 password,
