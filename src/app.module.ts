@@ -9,6 +9,7 @@ import redisConfig from './infrastruture/redis/redis.config';
 
 import { HealthModule } from './health/health.module';
 import { RedisModule } from './health/redis.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -39,7 +40,7 @@ import { RedisModule } from './health/redis.module';
     }),
 
     RedisModule,
-
+    PrismaModule,
     HealthModule,
   ],
 })
