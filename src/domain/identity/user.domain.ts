@@ -1,8 +1,10 @@
+import { UserStatus } from './user-status.enum';
+
 interface UserProps {
     id?: number;
     email: string;
     name: string;
-    status :   string;
+    status : UserStatus;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -11,7 +13,7 @@ export default class User {
     id?: number;
     email: string;
     name: string;
-    status: string;
+    status: UserStatus;
     createdAt: Date;
     updatedAt: Date;
 
