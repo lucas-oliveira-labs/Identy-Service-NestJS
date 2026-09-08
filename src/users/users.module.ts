@@ -13,7 +13,7 @@ import { UserCredentialsRepository } from '../repository/user-credentials/user-c
 import { BcryptPasswordHashed } from '../infrastruture/security/bcrypt-password-hasher';
 
 import { UsersController } from '../presentation/controllers/users.controller';
-import { UsersService } from './users.service';
+
 
 
 @Module({
@@ -21,7 +21,6 @@ import { UsersService } from './users.service';
 
     providers: [
         
-        UsersService,
         {
             provide: USER_REPOSITORY,
             useClass: UsersRepository,

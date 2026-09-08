@@ -1,15 +1,16 @@
 import {Body, Controller, Post } from '@nestjs/common';
-import { UsersService } from '../../users/users.service';
+import { CreateUserUseCase } from '../../application/identity/create-user.use-case';
+import { CreateUserDto } from '../../application/identity/dto/create-user.dto';
 
 
-@Controller('users') // define rota base
+@Controller('users/create') // define rota base
 export class UsersController {
     constructor(
-        private readonly usersService: UsersService,
+        private readonly createUserUseCase: CreateUserUseCase,
     ) {}
 
     @Post()
-    create(@Body() body: any) {
-        return this.usersService.create(body);
+    create(@Body() body: CreateUserDto) {
+        return this.createUserUseCase.execute(body);
     }
 }
