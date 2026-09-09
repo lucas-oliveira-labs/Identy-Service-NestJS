@@ -7,3 +7,5 @@ export interface UserRepository {
     updateUser(id: number, email: string, name: string): Promise<User>;
     deleteUser(id: number): Promise<void>;
 }
+
+export const USER_REPOSITORY = Symbol('USER_REPOSITORY');
