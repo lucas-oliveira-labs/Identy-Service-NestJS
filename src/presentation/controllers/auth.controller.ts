@@ -1,9 +1,17 @@
-/**
- * Responsável pelos endpoints relacionados à autenticação da identidade.
- *
- * Exemplos:
- * - Login
- * - Validação de credenciais
- * - Logout
- * - Autenticação multifator durante o login
- */
+import { Body, Controller, Post } from '@nestjs/common';
+
+import { AuthService } from  '../../auth/auth.service';
+import { LoginDto } from '../../auth/dto/login.dto';
+
+
+@Controller('auth')
+export class AuthController {
+    constructor(
+        private readonly authService: AuthService,
+    ) {}
+
+    @Post('login')
+    async login(@Body() dto: LoginDto) {
+        return this.authService.login(dto);
+    }
+}

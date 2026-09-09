@@ -10,7 +10,7 @@ import { USER_CREDENTIAL_REPOSITORY } from '../domain/credential/user-credential
 import { UsersRepository } from '../repository/users.repository';
 import { UserCredentialsRepository } from '../repository/user-credentials/user-credentials.repository';
 
-import { BcryptPasswordHashed } from '../infrastruture/security/bcrypt-password-hasher';
+import { BcryptPasswordHasher } from '../infrastruture/security/bcrypt-password-hasher';
 
 import { UsersController } from '../presentation/controllers/users.controller';
 
@@ -31,13 +31,19 @@ import { UsersController } from '../presentation/controllers/users.controller';
             useClass: UserCredentialsRepository,
         },
 
-         {
+        {
             provide: PASSWORD_HASHER,
-            useClass: BcryptPasswordHashed,
+            useClass: BcryptPasswordHasher ,
         },
 
         CreateUserUseCase,
 
+    ],
+
+    exports: [
+        USER_REPOSITORY,
+        USER_CREDENTIAL_REPOSITORY,
+        PASSWORD_HASHER
     ],
 })
 export class UsersModule {}
