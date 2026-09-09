@@ -2,7 +2,7 @@ import {Module} from '@nestjs/common';
 
 import {CreateUserUseCase} from '../application/identity/create-user.use-case';
 
-import { PASSWORD_HASHER } from '../application/authentication/password-hashed';
+import { PASSWORD_HASHER } from '../application/authentication/password-hasher';
 
 import { USER_REPOSITORY } from '../domain/identity/user.repository';
 import { USER_CREDENTIAL_REPOSITORY } from '../domain/credential/user-credential.repository';

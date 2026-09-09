@@ -12,7 +12,7 @@ import {
 
 import { PASSWORD_HASHER, 
         type PasswordHasher,
- } from '../authentication/password-hashed';
+ } from '../authentication/password-hasher';
 
 
 
