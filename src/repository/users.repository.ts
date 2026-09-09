@@ -2,17 +2,31 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 import User from '../domain/identity/user.domain';
+import { UserStatus as DomainUserStatus } from '../domain/identity/user-status.enum';
+import { UserStatus as PrismaUserStatus } from '../generated/prisma/enums';
 
+import { UserRepository } from '../domain/identity/user.repository';
 
 @Injectable()
-export class UsersRepository {
+export class UsersRepository implements UserRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async findById(id: number): Promise< User | null> {
+    private toDomainUserStatus(prismaStatus: PrismaUserStatus): DomainUserStatus {
+        switch (prismaStatus) {
+            case PrismaUserStatus.ACTIVE:
+                return DomainUserStatus.ACTIVE;
+
+            case PrismaUserStatus.INACTIVE:
+                return DomainUserStatus.INACTIVE;
+
+            case PrismaUserStatus.BLOCKED:
+                return DomainUserStatus.BLOCKED;
+        }
+    }
+
+    async findById(id: number): Promise<User | null> {
         const user = await this.prisma.user.findUnique({
-            where: {
-                id,
-            },
+            where: { id },
         });
 
         if (!user) {
@@ -23,17 +37,15 @@ export class UsersRepository {
             id: user.id,
             email: user.email,
             name: user.name,
-            status: user.status,
+            status: this.toDomainUserStatus(user.status),
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
-        })
+        });
     }
 
-    async findByEmail(email: string): Promise< User | null> {
+    async findByEmail(email: string): Promise<User | null> {
         const user = await this.prisma.user.findUnique({
-            where: {
-                email,
-            },
+            where: { email },
         });
 
         if (!user) {
@@ -41,51 +53,48 @@ export class UsersRepository {
         }
 
         return new User({
-            id:user.id,
+            id: user.id,
             email: user.email,
             name: user.name,
-            status: user.status,
+            status: this.toDomainUserStatus(user.status),
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
         });
     }
 
-    async createUser(email: string, password: string, name: string): Promise<User> {
+    async createUser(email: string, name: string): Promise<User> {
         const user = await this.prisma.user.create({
             data: {
                 email,
                 name,
-                status: 'ACTIVE',
+                status: PrismaUserStatus.ACTIVE,
             },
         });
 
-        return new User({
+        return new User ({
             id: user.id,
             email: user.email,
             name: user.name,
-            status: user.status,
+            status: this.toDomainUserStatus(user.status),
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
-        })
+        });
     }
 
-    async updateUser(id:number, email: string, password: string, name: string): Promise<User> {
+    async updateUser(id: number, email: string, name: string): Promise<User> {
         const user = await this.prisma.user.update({
-            where: {
-                id,
-            },
+            where: { id },
             data: {
                 email,
                 name,
-                status: 'UPDATED',
             },
         });
 
-        return new User({
+        return new User ({
             id: user.id,
             email: user.email,
             name: user.name,
-            status: user.status,
+            status: this.toDomainUserStatus(user.status),
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
         });
@@ -93,9 +102,7 @@ export class UsersRepository {
 
     async deleteUser(id: number): Promise<void> {
         await this.prisma.user.delete({
-            where: {
-                id,
-            },
+            where: { id },
         });
     }
 }
