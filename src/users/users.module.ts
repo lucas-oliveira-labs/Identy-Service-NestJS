@@ -3,6 +3,7 @@ import {Module} from '@nestjs/common';
 import {CreateUserUseCase} from '../application/identity/create-user.use-case';
 import {GetUserByIdUseCase} from '../application/identity/find-user.use-case';
 import {PutUserById} from '../application/identity/update-user.use-case';
+import {DeleteUserByIdCase} from "../application/identity/delete-user.use-case"
 
 import { PASSWORD_HASHER } from '../application/authentication/password-hasher';
 
@@ -40,7 +41,9 @@ import { UsersController } from '../presentation/controllers/users.controller';
 
         CreateUserUseCase,
         GetUserByIdUseCase,
-        PutUserById
+        PutUserById,
+        DeleteUserByIdCase,
+
 
     ],
 
