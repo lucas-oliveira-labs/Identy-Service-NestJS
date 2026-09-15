@@ -1,4 +1,4 @@
-import {Inject} from '@nestjs/common';
+import {ConflictException, Inject} from '@nestjs/common';
 
 import User from '../../domain/identity/user.domain';
 import { USER_REPOSITORY,
@@ -38,7 +38,7 @@ export class CreateUserUseCase {
         const existingUser = await this.userRepository.findByEmail(input.email);
 
         if (existingUser) {
-            throw new Error('usuario ja existe');
+            throw new ConflictException('usuário já cadastrado');
         }
 
         const user = await this.userRepository.createUser(
