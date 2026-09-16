@@ -6,11 +6,18 @@ import {
     AuthenticateUserUseCase } from '../application/authentication/authenticate-user.user-case'; 
     
 import { UsersModule } from '../users/users.module'
+import { JwtModule, JwtService } from '@nestjs/jwt';
 
 
 @Module({
     imports: [
-        UsersModule
+        UsersModule,
+        JwtModule.register({
+            secret: process.env.JWT_SECRET,
+            signOptions: {
+                expiresIn: '60m',
+            }
+        })
     ],
 
     controllers: [
