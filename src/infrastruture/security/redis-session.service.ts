@@ -128,4 +128,48 @@ export class RedisSessionService implements SessionService {
             this.ttlSeconds,
         );
     }
+
+    async findByUserId(userId: string): Promise<SessionData> {
+        const sessions = await this.listByUser(Number(userId));
+
+        if (sessions.length === 0) {
+            throw new Error('Session not found');
+        }
+
+        return sessions[0];
+    }
+
+    async delete(sessionId: string, userId: string): Promise<void> {
+        const session = await this.get(sessionId);
+
+        if (!session) {
+            return;
+        }
+
+        if (session.userId ! == Number(userId)) {
+            return;
+        }
+
+        await this.redisService.delete(this.sessionKey(sessionId));
+
+        await this.redisService.removeFromSet(
+            this.userSessionsKey(session.userId),
+            sessionId,
+        )
+    }
+
+    async deleteAll(userId: string): Promise<void> {
+        const sessions = await this.listByUser(Number(userId));
+
+        for (const session of sessions) {
+            await this.redisService.delete(
+                this.sessionKey(session.id),
+            );
+
+            await this.redisService.removeFromSet(
+                this.userSessionsKey(session.userId),
+                session.id,
+            );
+        }
+    }
 }

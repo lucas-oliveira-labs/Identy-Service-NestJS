@@ -14,6 +14,8 @@ import { RedisRefreshTokenService } from '../infrastruture/security/redis-refres
 
 import { SESSION_SERVICE } from '../application/authentication/session';
 import { RedisSessionService } from '../infrastruture/security/redis-session.service';
+import { SessionController } from '../presentation/controllers/session.controller';
+import { JwtAuthGuard } from '../presentation/guards/jwt-auth.guard';
 
 
 @Module({
@@ -28,7 +30,8 @@ import { RedisSessionService } from '../infrastruture/security/redis-session.ser
     ],
 
     controllers: [
-        AuthController
+        AuthController,
+        SessionController
     ],
     
     providers: [
@@ -42,13 +45,20 @@ import { RedisSessionService } from '../infrastruture/security/redis-session.ser
 
         {
             provide: REFRESH_TOKEN_SERVICE,
-            useClass: RedisRefreshTokenService
+            useClass: RedisRefreshTokenService,
         },
 
         {
             provide: SESSION_SERVICE,
-            useClass: RedisSessionService
+            useClass: RedisSessionService,
         },
+
+        {
+            provide: SESSION_SERVICE,
+            useClass: RedisSessionService,
+        },
+
+        JwtAuthGuard
     ],
 })
 export class AuthModule{}
