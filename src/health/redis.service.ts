@@ -57,4 +57,16 @@ export class RedisService implements OnModuleInit, OnModuleDestroy{
     async delete(key: string): Promise<void> {
         await this.client.del(key);
     }
+
+    async addToSet(key: string, value: string): Promise<void> {
+        await this.client.sAdd(key, value);
+    }
+
+    async getSetMembers(key: string): Promise<string[]> {
+        return this.client.sMembers(key);
+    }
+
+    async removeFromSet(key: string, value: string): Promise<void> {
+        await this.client.sRem(key, value);
+    }
 }

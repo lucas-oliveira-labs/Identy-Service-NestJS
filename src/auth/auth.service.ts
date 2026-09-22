@@ -9,7 +9,6 @@ import { REFRESH_TOKEN_SERVICE } from '../application/authentication/refresh-tok
 import type { RefreshTokenService } from '../application/authentication/refresh-token';
 import { SESSION_SERVICE } from '../application/authentication/session';
 import type { SessionService } from '../application/authentication/session';
-import { ServerSession } from 'typeorm/driver/mongodb/typings.js';
 
 interface RefreshTokenPayload {
     sub: string;

@@ -12,6 +12,9 @@ import { JwtAccessTokenService } from '../infrastruture/security/jwt-access-toke
 import { REFRESH_TOKEN_SERVICE } from '../application/authentication/refresh-token';
 import { RedisRefreshTokenService } from '../infrastruture/security/redis-refresh-token.service';
 
+import { SESSION_SERVICE } from '../application/authentication/session';
+import { RedisSessionService } from '../infrastruture/security/redis-session.service';
+
 
 @Module({
     imports: [
@@ -40,7 +43,12 @@ import { RedisRefreshTokenService } from '../infrastruture/security/redis-refres
         {
             provide: REFRESH_TOKEN_SERVICE,
             useClass: RedisRefreshTokenService
-        }
+        },
+
+        {
+            provide: SESSION_SERVICE,
+            useClass: RedisSessionService
+        },
     ],
 })
 export class AuthModule{}
