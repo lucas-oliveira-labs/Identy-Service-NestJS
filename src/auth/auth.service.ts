@@ -7,11 +7,15 @@ import { ACCESS_TOKEN_SERVICE } from '../application/authentication/access-token
 import type { AccessTokenService } from '../application/authentication/access-token';
 import { REFRESH_TOKEN_SERVICE } from '../application/authentication/refresh-token';
 import type { RefreshTokenService } from '../application/authentication/refresh-token';
+import { SESSION_SERVICE } from '../application/authentication/session';
+import type { SessionService } from '../application/authentication/session';
+import { ServerSession } from 'typeorm/driver/mongodb/typings.js';
 
 interface RefreshTokenPayload {
     sub: string;
     type: 'refresh' | 'access';
     jti?: string;
+    sessionId: string;
 }
 
 @Injectable()
@@ -25,6 +29,9 @@ export class AuthService {
 
         @Inject(REFRESH_TOKEN_SERVICE)
         private readonly RefreshTokenService: RefreshTokenService,
+
+        @Inject(SESSION_SERVICE)
+        private readonly sessionService: SessionService,
     ) {}
 
     async login(dto: LoginDto) {
@@ -33,12 +40,17 @@ export class AuthService {
             password: dto.password,
         });
 
+        const sessionId = await this.sessionService.create(
+            result.user.id,
+        )
+
         const accessToken = await this.AccessTokenService.generate(
             result.user.id,
         );
 
         const refreshToken = await this.RefreshTokenService.generate(
             result.user.id,
+            sessionId,
         );
 
         return {
@@ -56,25 +68,57 @@ export class AuthService {
                 {},
             );
         } catch {
-            throw new UnauthorizedException('Invalid or expired refresh token');
+            throw new UnauthorizedException(
+                'Invalido ou o refresh token ixpirou',
+            );
         }
 
         if (payload.type !== 'refresh') {
-            throw new UnauthorizedException('Invalid refresh token');
+            throw new UnauthorizedException(
+                'Invalido ou o refresh token ixpirou',
+            );
         }
 
-        const userId = await this.RefreshTokenService.validate(
+        const refreshTokenData = await this.RefreshTokenService.validate(
             dto.refresh_token,
         );
 
-        if (userId === null || userId !== Number(payload.sub)) {
-            throw new UnauthorizedException('Invalid or revoked refresh token');
+        if (
+            refreshTokenData === null ||
+            refreshTokenData.sessionId !== payload.sessionId ||
+            refreshTokenData.userId !== Number(payload.sub)
+            
+            
+        ) {
+            throw new UnauthorizedException(
+                'Invalido ou refresh token revogado',
+            );
         }
 
-        await this.RefreshTokenService.revoke(dto.refresh_token);
+        const sessionId = refreshTokenData.sessionId
 
-        const accessToken = await this.AccessTokenService.generate(userId);
-        const refreshToken = await this.RefreshTokenService.generate(userId);
+        const session = await this.sessionService.get(sessionId);
+
+        if (session === null) {
+            throw new UnauthorizedException(
+                'Invalid or revoked session',
+            );
+        }
+
+        await this.RefreshTokenService.revoke(
+            dto.refresh_token,
+        );
+
+        await this.sessionService.touch(sessionId);
+
+        const accessToken = await this.AccessTokenService.generate(
+            session.userId,
+        );
+
+        const refreshToken = await this.RefreshTokenService.generate(
+            session.userId,
+            sessionId,
+        );
 
         return {
             access_token: accessToken,
@@ -83,6 +127,20 @@ export class AuthService {
     }
 
     async lougoth(dto: RefreshTokenDto) {
-        await this.RefreshTokenService.revoke(dto.refresh_token);
+        const refreshTokenData = await this.RefreshTokenService.validate(
+            dto.refresh_token,
+        );
+
+        if (refreshTokenData === null) {
+            return;
+        }
+
+        await this.RefreshTokenService.revoke(
+            dto.refresh_token,
+        );
+
+        await this.sessionService.revoke(
+            refreshTokenData.sessionId,
+        )
     }
 }
