@@ -81,4 +81,8 @@ export class AuthService {
             refresh_token: refreshToken,
         };
     }
+
+    async lougoth(dto: RefreshTokenDto) {
+        await this.RefreshTokenService.revoke(dto.refresh_token);
+    }
 }
