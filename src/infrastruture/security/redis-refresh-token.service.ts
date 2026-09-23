@@ -11,6 +11,7 @@ interface RefreshTokenPayload {
     sub: string;
     type: 'refresh';
     jti: string;
+    sessionId: string;
 }
 
 @Injectable()
@@ -33,11 +34,12 @@ export class RedisRefreshTokenService implements RefreshTokenService {
         return `auth:refresh:${hash}`;
     }
 
-    async generate(userId: number): Promise<string> {
+    async generate(userId: number, sessionId: string): Promise<string> {
         const payload: RefreshTokenPayload = {
             sub: String(userId),
             type: 'refresh',
             jti: randomUUID(),
+            sessionId,
         };
 
         const token = await this.jwtService.signAsync(payload, {
@@ -47,30 +49,53 @@ export class RedisRefreshTokenService implements RefreshTokenService {
 
         await this.redisService.set(
             this.key(this.hash(token)),
-            String(userId),
+            JSON.stringify({
+                userId,
+                sessionId,
+            }),
             this.ttlSeconds,
         );
 
         return token;
     }
 
-    async validate(token: string): Promise<number | null> {
-        const userId = await this.redisService.get(
+    async validate(
+        token: string,
+    ): Promise<{
+        userId: number;
+        sessionId: string;
+    } | null> {
+        const value = await this.redisService.get(
             this.key(this.hash(token)),
         );
 
-        if (!userId) {
+        if (!value) {
             return null;
         }
 
-        const parsedUserId = Number(userId);
+        try {
+            const parsed = JSON.parse(value);
 
-        return Number.isInteger(parsedUserId) ? parsedUserId : null;
+            if (
+                typeof parsed.userId !== 'number' ||
+                !Number.isInteger(parsed.userId) ||
+                typeof parsed.sessionId !== 'string'
+            ) {
+                return null;
+            }
+
+            return {
+                userId: parsed.userId,
+                sessionId: parsed.sessionId,
+            };
+        } catch {
+            return null;
+        }
     }
 
     async revoke(token: string): Promise<void> {
         await this.redisService.delete(
             this.key(this.hash(token)),
-        );
+        )
     }
 }
