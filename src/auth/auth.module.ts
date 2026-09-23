@@ -53,12 +53,7 @@ import { JwtAuthGuard } from '../presentation/guards/jwt-auth.guard';
             useClass: RedisSessionService,
         },
 
-        {
-            provide: SESSION_SERVICE,
-            useClass: RedisSessionService,
-        },
-
-        JwtAuthGuard
+        JwtAuthGuard,
     ],
 })
 export class AuthModule{}

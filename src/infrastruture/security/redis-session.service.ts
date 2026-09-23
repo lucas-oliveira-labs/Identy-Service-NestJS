@@ -140,23 +140,29 @@ export class RedisSessionService implements SessionService {
     }
 
     async delete(sessionId: string, userId: string): Promise<void> {
-        const session = await this.get(sessionId);
 
-        if (!session) {
-            return;
-        }
+    const session = await this.get(sessionId);
 
-        if (session.userId ! == Number(userId)) {
-            return;
-        }
-
-        await this.redisService.delete(this.sessionKey(sessionId));
-
-        await this.redisService.removeFromSet(
-            this.userSessionsKey(session.userId),
-            sessionId,
-        )
+    if (!session) {
+        console.log('SESSION NOT FOUND');
+        return;
     }
+
+    const numericUserId = Number(userId);
+
+    if (session.userId !== numericUserId) {
+        return;
+    }
+
+    await this.redisService.delete(
+        this.sessionKey(sessionId),
+    );
+
+    await this.redisService.removeFromSet(
+        this.userSessionsKey(session.userId),
+        sessionId,
+    );
+}
 
     async deleteAll(userId: string): Promise<void> {
         const sessions = await this.listByUser(Number(userId));

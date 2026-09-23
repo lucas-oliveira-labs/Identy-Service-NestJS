@@ -33,7 +33,7 @@ export class JwtAuthGuard implements CanActivate {
 
         const [type, token] = authorization.split(' ');
 
-        if (type !== 'Baerer' || !token) {
+        if (type !== 'Bearer' || !token) {
             throw new UnauthorizedException('Invalid authorization header');
         }
 
@@ -42,7 +42,7 @@ export class JwtAuthGuard implements CanActivate {
                 token,
                 {
                     secret: this.configService.getOrThrow<string>(
-                        'auth.jwtService',
+                        'auth.jwtSecret',
                     ),
                 },
             );
