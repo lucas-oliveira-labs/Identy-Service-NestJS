@@ -4,7 +4,7 @@ CREATE TABLE "PasswordResetToken" (
     "userId" INTEGER NOT NULL,
     "tokenHash" TEXT NOT NULL,
     "expiresAt" TIMESTAMP(3) NOT NULL,
-    "userAt" TIMESTAMP(3),
+    "usedAt" TIMESTAMP(3),
     "revokedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

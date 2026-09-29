@@ -48,7 +48,7 @@ model PasswordResetToken {
   tokenHash   String     @unique
 
   expiresAt   DateTime
-  userAt      DateTime?
+  usedAt      DateTime?
   revokedAt   DateTime?
 
   createdAt   DateTime   @default(now())
