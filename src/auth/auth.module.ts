@@ -25,6 +25,7 @@ import { PASSWORD_RESET_TOKEN_SERVICE,  } from '../application/authentication/pa
 import { PasswordResetTokenServiceImpl } from '../infrastruture/security/password-reset-token.service';
 import { ForgotPasswordUseCase } from '../application/authentication/forgot-password.use-case';
 import { PasswordRecoveryController } from '../presentation/controllers/password-recovery.controller';
+import { ResetPasswordUseCase } from '../application/authentication/reset-password.use-case';
 
 import { EmailModule } from '../infrastruture/email/email.module';
 
@@ -52,6 +53,7 @@ import { EmailModule } from '../infrastruture/email/email.module';
         AuthService,
         AuthenticateUserUseCase,
         ForgotPasswordUseCase,
+        ResetPasswordUseCase,
 
         {
             provide: ACCESS_TOKEN_SERVICE,
