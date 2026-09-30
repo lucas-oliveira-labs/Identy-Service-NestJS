@@ -34,20 +34,20 @@ export class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
         );
 
         const expiresAt = new Date(
-            Date.now() + this.durationToMillisconds(expiresIn),
+            Date.now() + this.durationToMilliseconds(expiresIn),
         );
 
         await this.repository.create(
             userId,
             tokenHash,
-            expiresAt
+            expiresAt,
         );
 
         return token;
 
     }
 
-    private durationToMillisconds(duration: string): number {
+    private durationToMilliseconds(duration: string): number {
         const match = duration.match(/^(\d+)(s|m|h|d)$/);
 
         if (!match) {
@@ -63,6 +63,7 @@ export class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
             s: 1000,
             m: 60 * 1000,
             h: 60 * 60 * 1000,
+            d: 24 * 60 * 1000,
         };
 
         return value * multipliers[unit];

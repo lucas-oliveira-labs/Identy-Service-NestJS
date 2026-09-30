@@ -20,12 +20,11 @@ import { JwtAuthGuard } from '../presentation/guards/jwt-auth.guard';
 import {
     PASSWORD_RESET_TOKEN_REPOSITORY,
 } from '../domain/credential/password-reset-token.repository';
-
 import { PasswordResetTokenRepositoryImpl } from '../repository/password-reset-token/password-reset-token.repository';
-
 import { PASSWORD_RESET_TOKEN_SERVICE,  } from '../application/authentication/password-reset-token';
-
 import { PasswordResetTokenServiceImpl } from '../infrastruture/security/password-reset-token.service';
+import { ForgotPasswordUseCase } from '../application/authentication/forgot-password.use-case';
+import { PasswordRecoveryController } from '../presentation/controllers/password-recovery.controller';
 
 @Module({
     imports: [
@@ -40,12 +39,14 @@ import { PasswordResetTokenServiceImpl } from '../infrastruture/security/passwor
 
     controllers: [
         AuthController,
-        SessionController
+        SessionController,
+        PasswordRecoveryController,
     ],
     
     providers: [
         AuthService,
         AuthenticateUserUseCase,
+        ForgotPasswordUseCase,
 
         {
             provide: ACCESS_TOKEN_SERVICE,
