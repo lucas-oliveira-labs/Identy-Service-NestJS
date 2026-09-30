@@ -26,6 +26,9 @@ import { PasswordResetTokenServiceImpl } from '../infrastruture/security/passwor
 import { ForgotPasswordUseCase } from '../application/authentication/forgot-password.use-case';
 import { PasswordRecoveryController } from '../presentation/controllers/password-recovery.controller';
 
+import { EmailModule } from '../infrastruture/email/email.module';
+
+
 @Module({
     imports: [
         UsersModule,
@@ -34,7 +37,9 @@ import { PasswordRecoveryController } from '../presentation/controllers/password
             signOptions: {
                 expiresIn: '60m',
             }
-        })
+        }),
+
+        EmailModule,
     ],
 
     controllers: [

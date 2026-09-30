@@ -6,6 +6,7 @@ import appConfig from './infrastruture/config/app.config';
 import authConfig from './infrastruture/config/auth.config';
 import databaseConfig from './infrastruture/config/database.config';
 import redisConfig from './infrastruture/redis/redis.config';
+import emailConfig from './infrastruture/config/email.config';
 
 import { HealthModule } from './health/health.module';
 import { RedisModule } from './health/redis.module';
@@ -23,6 +24,7 @@ import { AuthModule } from './auth/auth.module'
         authConfig,
         databaseConfig,
         redisConfig,
+        emailConfig,
       ],
     }),
 
