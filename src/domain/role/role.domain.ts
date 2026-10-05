@@ -4,22 +4,22 @@
 export interface RoleProps {
     id?: number;
     name: string;
-    createAt: Date;
-    updateAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 
 export default class Role {
     id?: number;
     name: string;
-    createAt: Date;
-    updateAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
 
 
     constructor(props: RoleProps) {
         this.id = props.id;
         this.name = props.name;
-        this.createAt = props.createAt;
-        this.updateAt = props.updateAt;
+        this.createdAt = props.createdAt;
+        this.updatedAt = props.updatedAt;
     }
 }

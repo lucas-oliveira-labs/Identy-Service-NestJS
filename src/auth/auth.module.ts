@@ -29,6 +29,11 @@ import { ResetPasswordUseCase } from '../application/authentication/reset-passwo
 
 import { EmailModule } from '../infrastruture/email/email.module';
 
+import {RoleRepositoryImpl} from '../repository/roles-repository/roles.repository';
+import {ROLE_REPOSITORY} from '../domain/role/role.repository';
+import {RoleServiceImpl} from '../domain/role.service';
+import {ROLE_SERVICE} from '../domain/role/role.contract';
+
 
 @Module({
     imports: [

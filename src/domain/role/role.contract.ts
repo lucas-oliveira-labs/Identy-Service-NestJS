@@ -1,4 +1,4 @@
-
+import Role from './role.domain';
 
 export const ROLE_SERVICE = Symbol('ROLE_SERVICE');
 
