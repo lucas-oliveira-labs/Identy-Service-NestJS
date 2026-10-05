@@ -80,6 +80,16 @@ import { EmailModule } from '../infrastruture/email/email.module';
             useClass: PasswordResetTokenServiceImpl,
         },
 
+        {
+            provide: ROLE_REPOSITORY,
+            useClass: RoleRepositoryImpl,
+        },
+
+        {
+            provide: ROLE_SERVICE,
+            useClass: RoleServiceImpl,
+        },
+
         JwtAuthGuard,
     ],
 })
