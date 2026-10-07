@@ -16,7 +16,7 @@ export class RoleServiceImpl implements RoleService {
         const normalizedName = name.trim().toLowerCase();
 
         const existingRole = await this.roleRepository.findByName(
-            normalizedName
+            normalizedName,
         );
 
         if (existingRole) {
@@ -37,7 +37,7 @@ export class RoleServiceImpl implements RoleService {
     }
 
     async findByName(name: string): Promise<Role | null> {
-        const normalizedName = name.trim().toUpperCase();
+        const normalizedName = name.trim().toLowerCase();
         return this.roleRepository.findByName(normalizedName);
     }
 

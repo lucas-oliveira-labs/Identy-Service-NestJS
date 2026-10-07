@@ -1,9 +1,10 @@
-import {ConflictException, Inject} from '@nestjs/common';
+import {Inject} from '@nestjs/common';
 
 import Role from '../../domain/role/role.domain';
-import { ROLE_REPOSITORY,
-    type RoleRepository, 
-    } from '../../domain/role/role.repository';
+import { 
+    ROLE_SERVICE,
+    type RoleService
+} from '../../domain/role/role.contract';
 
 
 
@@ -14,23 +15,11 @@ interface CreateRoleInput {
 
 export class CreateRoleUseCase {
     constructor(
-        @Inject(ROLE_REPOSITORY)
-        private readonly roleRepository: RoleRepository
+        @Inject(ROLE_SERVICE)
+        private readonly roleService: RoleService,
     ) {}
 
     async execute(input: CreateRoleInput): Promise<Role> {
-        const existingRole = await this.roleRepository.findAll();
-
-        if (existingRole) {
-            throw new ConflictException('Role ja existe');
-        }
-
-        const role = new Role({
-            name: input.name,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        });
-
-        return this.roleRepository.create(role);
+        return this.roleService.create(input.name);
     }
 }

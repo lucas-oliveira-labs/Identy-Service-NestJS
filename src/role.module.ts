@@ -10,6 +10,12 @@ import {UpdateRoleUseCase} from './application/role/update-role.use-case';
 import { ROLE_REPOSITORY } from './domain/role/role.repository';
 
 import { RoleRepositoryImpl } from './repository/roles-repository/roles.repository';
+import { RoleServiceImpl } from './domain/role.service';
+
+import {
+    ROLE_SERVICE,
+    type RoleService,
+} from './domain/role/role.contract';
 
 import {  RoleController } from './presentation/controllers/rule.controller';
 
@@ -25,6 +31,11 @@ import {  RoleController } from './presentation/controllers/rule.controller';
         {
             provide: ROLE_REPOSITORY,
             useClass: RoleRepositoryImpl,
+        },
+
+        {
+            provide: ROLE_SERVICE,
+            useClass: RoleServiceImpl,
         },
 
 
