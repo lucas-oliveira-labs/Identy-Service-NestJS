@@ -8,6 +8,11 @@ import { CreateRoleDto } from '../../application/role/dtos/create-role.dto';
 import { UpdateRoleDto } from '../../application/role/dtos/update-role.dto';
 
 
+import { AssignRulesToRoleUseCase } from '../../application/role/assign-rules-to-role.use-case';
+import { RemoveRuleFromRoleUseCase } from '../../application/role/remove-rules-from-role.use-case';
+import { AssignRulesToRoleDto } from '../../application/role/dtos/assign-rules-to-role.dto';
+
+
 @Controller('roles')
 export class RoleController {
     constructor(
@@ -16,6 +21,8 @@ export class RoleController {
         private readonly findAllRolesUseCase: FindAllRolesUseCase,
         private readonly findRoleByIdUseCase: FindRoleByIdUseCase,
         private readonly updateRoleUseCase: UpdateRoleUseCase,
+        private readonly assignRulesToRoleUseCase: AssignRulesToRoleUseCase,
+        private readonly removeRuleFromRoleUseCase: RemoveRuleFromRoleUseCase,
     ){}
 
     @Post('/create')
@@ -46,5 +53,28 @@ export class RoleController {
     @Delete('/:id')
     async delete(@Param('id', ParseIntPipe) id: number) {
         return this.deleteRoleUseCase.execute({id});
-    }   
+    }
+
+    @Post('/:id/rules')
+    async assignRules(@Param('id', ParseIntPipe) id: number, @Body() dto: AssignRulesToRoleDto) {
+        await this.assignRulesToRoleUseCase.execute({
+            roleId: id,
+            ruleIds: dto.ruleIds,
+        });
+
+        return { message: 'Rules associadas com sucesso'};
+    }
+
+    @Delete('/:id/rules/:ruleId')
+    async removeRules(
+        @Param('id', ParseIntPipe) id: number, 
+        @Param('ruleId', ParseIntPipe) ruleId: number,
+    ) {
+        await this.removeRuleFromRoleUseCase.execute({
+            roleId: id,
+            ruleId,
+        });
+
+        return { message: 'Rule removida da role com sucesso'};
+    }
 }

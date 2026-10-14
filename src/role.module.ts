@@ -19,7 +19,11 @@ import {
 
 import {  RoleController } from './presentation/controllers/rule.controller';
 
+import { AssignRulesToRoleUseCase } from './application/role/assign-rules-to-role.use-case';
+import { RemoveRuleFromRoleUseCase } from './application/role/remove-rules-from-role.use-case';
 
+import { RULE_REPOSITORY } from './domain/rule/rule.repository';
+import { RuleRepositoryImpl } from './repository/rules-repository/rules.repository';
 
 @Module({
     controllers: [
@@ -27,7 +31,10 @@ import {  RoleController } from './presentation/controllers/rule.controller';
     ],
 
     providers: [
-        
+        {
+            provide: RULE_REPOSITORY,
+            useClass: RuleRepositoryImpl,
+        },
         {
             provide: ROLE_REPOSITORY,
             useClass: RoleRepositoryImpl,
@@ -44,12 +51,14 @@ import {  RoleController } from './presentation/controllers/rule.controller';
         FindAllRolesUseCase,
         FindRoleByIdUseCase,
         UpdateRoleUseCase,
-
+        AssignRulesToRoleUseCase,
+        RemoveRuleFromRoleUseCase,
 
     ],
 
     exports: [
         ROLE_REPOSITORY,
+        RULE_REPOSITORY
     ],
 })
 export class RolesModule {}
