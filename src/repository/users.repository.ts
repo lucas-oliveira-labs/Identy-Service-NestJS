@@ -105,6 +105,28 @@ export class UsersRepository implements UserRepository {
             where: { id },
         });
     }
+
+    async assignRoles(userId: number, roleIds: number[]): Promise<void> {
+        await this.prisma.user.update({
+            where: { id: userId },
+            data: {
+                roles: {
+                    connect: roleIds.map((id) => ({ id })),
+                },
+            },
+        });
+    }
+
+    async removeRole(userId: number, roleId: number): Promise<void> {
+        await this.prisma.user.update({
+            where: { id: userId },
+            data: {
+                roles: {
+                    disconnect: { id: roleId},
+                },
+            },
+        });
+    }
 }
 
 // Repository:
