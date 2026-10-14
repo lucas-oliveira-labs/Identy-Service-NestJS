@@ -25,6 +25,16 @@ model Role {
   updatedAt   DateTime  @updatedAt
 
   users    User[]
+  rules    Rule[]
+}
+
+model Rule {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  roles Role[]
 }
 
 model User {
