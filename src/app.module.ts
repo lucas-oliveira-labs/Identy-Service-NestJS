@@ -12,8 +12,10 @@ import { HealthModule } from './health/health.module';
 import { RedisModule } from './health/redis.module';
 import { PrismaModule } from './prisma/prisma.module';
 
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './users.module';
 import { AuthModule } from './auth/auth.module'
+import { RolesModule } from './role.module';
+
 
 @Module({
   imports: [
@@ -49,6 +51,7 @@ import { AuthModule } from './auth/auth.module'
     HealthModule,
     UsersModule,
     AuthModule,
+    RolesModule,
   ],
 })
 export class AppModule {}
