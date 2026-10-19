@@ -6,13 +6,16 @@ import appConfig from './infrastruture/config/app.config';
 import authConfig from './infrastruture/config/auth.config';
 import databaseConfig from './infrastruture/config/database.config';
 import redisConfig from './infrastruture/redis/redis.config';
+import emailConfig from './infrastruture/config/email.config';
 
 import { HealthModule } from './health/health.module';
 import { RedisModule } from './health/redis.module';
 import { PrismaModule } from './prisma/prisma.module';
 
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './users.module';
 import { AuthModule } from './auth/auth.module'
+import { RolesModule } from './role.module';
+
 
 @Module({
   imports: [
@@ -23,6 +26,7 @@ import { AuthModule } from './auth/auth.module'
         authConfig,
         databaseConfig,
         redisConfig,
+        emailConfig,
       ],
     }),
 
@@ -47,6 +51,7 @@ import { AuthModule } from './auth/auth.module'
     HealthModule,
     UsersModule,
     AuthModule,
+    RolesModule,
   ],
 })
 export class AppModule {}
