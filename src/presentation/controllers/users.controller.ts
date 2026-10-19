@@ -7,6 +7,9 @@ import { UpdateUserDto } from '../../application/identity/dto/update-user.dto';
 import { DeleteUserByIdCase } from '../../application/identity/delete-user.use-case';
 import { PatchUserByIdUserCase } from '../../application/identity/patch-user.use-case';
 import { PatchUserDto } from '../../application/identity/dto/patch-user.dto';
+import { AssignRolesToUserDto } from '../../application/identity/dto/assign-roles-to-user.dto';
+import { AssignRolesToUserUseCase } from '../../application/role/assign-roles-to-user.use-case';
+import { RemoveRoleFromUserUseCase } from '../../application/role/remove-role-from-user.use-case';
 
 
 @Controller('users/') // define rota base
@@ -16,7 +19,9 @@ export class UsersController {
         private readonly GetUserByIdUseCase: GetUserByIdUseCase,
         private readonly PutUserById: PutUserById,
         private readonly PatchUserById: PatchUserByIdUserCase,
-        private readonly DeleteUserByIdCase: DeleteUserByIdCase
+        private readonly DeleteUserByIdCase: DeleteUserByIdCase,
+        private readonly AssignRolesToUserUseCase: AssignRolesToUserUseCase,
+        private readonly RemoveRoleFromUserUseCase: RemoveRoleFromUserUseCase,
     ) {}
 
     @Post('create')
@@ -61,4 +66,27 @@ export class UsersController {
             id,
         })
     }
+
+    @Post(':id/roles')
+    assignRoles(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() body: AssignRolesToUserDto,
+    ) {
+        return this.AssignRolesToUserUseCase.execute(
+            id,
+            body.roleIds,
+        )
+    }
+
+    @Delete(':id/roles/:roleId')
+    removeRole(
+        @Param('id', ParseIntPipe) id: number,
+        @Param('roleId', ParseIntPipe) roleId: number
+    ) {
+        return this.RemoveRoleFromUserUseCase.execute(
+            id,
+            roleId,
+        )
+    }
+
 }
