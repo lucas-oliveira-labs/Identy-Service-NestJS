@@ -12,6 +12,16 @@ export interface RoleRepository {
     update(role: Role): Promise<Role>;
 
     delete(id: number): Promise<void>;
+
+    assignRules(
+        roleId: number,
+        ruleIds: number[],
+    ): Promise<void>;
+
+    removeRules(
+        roleId: number,
+        ruleIds: number[],
+    ): Promise<void>;
 }
 
 export const ROLE_REPOSITORY = Symbol('ROLE_REPOSITORY');

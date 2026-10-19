@@ -99,4 +99,26 @@ export class RoleRepositoryImpl implements RoleRepository {
             }
         })
     }
+
+    async assignRules(roleId: number, ruleIds: number[]): Promise<void> {
+        await this.prisma.role.update({
+            where: { id: roleId },
+            data: {
+                rules: {
+                    connect: ruleIds.map((id) => ({ id })),
+                },
+            },
+        });
+    }
+
+    async removeRules(roleId: number, ruleIds: number[]): Promise<void> {
+        await this.prisma.role.update({
+            where: { id: roleId },
+            data: { 
+                rules: {
+                    disconnect: ruleIds.map((id) => ({ id })),
+                },
+            },
+        });
+    }
 }

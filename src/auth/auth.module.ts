@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { 
     AuthenticateUserUseCase } from '../application/authentication/authenticate-user.user-case'; 
     
-import { UsersModule } from '../users/users.module'
+import { UsersModule } from '../users.module'
 import { JwtModule } from '@nestjs/jwt';
 import { ACCESS_TOKEN_SERVICE } from '../application/authentication/access-token';
 import { JwtAccessTokenService } from '../infrastruture/security/jwt-access-token.service';
