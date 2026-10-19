@@ -18,9 +18,14 @@ import { BcryptPasswordHasher } from './infrastruture/security/bcrypt-password-h
 
 import { UsersController } from './presentation/controllers/users.controller';
 
+import { RolesModule } from './role.module';
+import { AssignRolesToUserUseCase } from './application/role/assign-roles-to-user.use-case';
+import { RemoveRoleFromUserUseCase } from './application/role/remove-role-from-user.use-case';
 
 
 @Module({
+    imports: [RolesModule],
+
     controllers: [UsersController],
 
     providers: [
@@ -45,7 +50,8 @@ import { UsersController } from './presentation/controllers/users.controller';
         PutUserById,
         PatchUserByIdUserCase,
         DeleteUserByIdCase,
-
+        AssignRolesToUserUseCase,
+        RemoveRoleFromUserUseCase,
 
     ],
 
