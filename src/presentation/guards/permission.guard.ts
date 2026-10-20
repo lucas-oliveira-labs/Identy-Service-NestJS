@@ -3,6 +3,7 @@ import {
     ExecutionContext,
     ForbiddenException,
     Injectable,
+    Inject,
     UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -13,6 +14,10 @@ import {
     type RequiredPermission,
 } from '../decorators/require-permission.decorator';
 import type { AccessTokenPayload } from '../../application/authentication/access-token';
+import type { UserRepository } from '../../domain/identity/user.repository';
+import { 
+    USER_REPOSITORY,
+} from '../../domain/identity/user.repository';
 
 
 interface AuthenticatedRequest extends Request {
@@ -24,9 +29,12 @@ interface AuthenticatedRequest extends Request {
 export class PermissionGuard implements CanActivate {
     constructor(
         private readonly reflector: Reflector,
+
+        @Inject(USER_REPOSITORY)
+        private readonly userRepository: UserRepository,
     ) {}
 
-    canActivate(context: ExecutionContext): boolean {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const requiredPermission =
             this.reflector.getAllAndOverride<RequiredPermission>(
                 PERMISSION_KEY,
@@ -48,8 +56,25 @@ export class PermissionGuard implements CanActivate {
             );
         }
 
-        throw new ForbiddenException(
-            `Permissão necessária: ${requiredPermission.resource}:${requiredPermission.action}`,
+        const userId = Number(request.user.sub);
+
+        if (!Number.isSafeInteger(userId) || userId <= 0) {
+            throw new UnauthorizedException(
+                'identificador de usuario ínvalido',
+            )
+        }
+
+        const permissionName =`${requiredPermission.resource}:${requiredPermission.action}`;
+
+        const hasPermission = await this.userRepository.hasPermission(
+            userId,
+            permissionName,
         )
+
+        if (!hasPermission) {
+            throw new ForbiddenException('Permissiao insuficiente');
+        }
+
+        return true;
     }
 }

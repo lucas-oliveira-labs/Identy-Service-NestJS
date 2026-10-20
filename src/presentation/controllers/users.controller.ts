@@ -1,4 +1,8 @@
 import {Body,Param, Controller,ParseIntPipe, Post, Get, Put, Delete, Patch } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
+import { RequirePermission } from '../decorators/require-permission.decorator';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { PermissionGuard } from '../guards/permission.guard';
 import { CreateUserUseCase } from '../../application/identity/create-user.use-case';
 import { CreateUserDto } from '../../application/identity/dto/create-user.dto';
 import { GetUserByIdUseCase } from '../../application/identity/find-user.use-case';
@@ -10,6 +14,7 @@ import { PatchUserDto } from '../../application/identity/dto/patch-user.dto';
 import { AssignRolesToUserDto } from '../../application/identity/dto/assign-roles-to-user.dto';
 import { AssignRolesToUserUseCase } from '../../application/role/assign-roles-to-user.use-case';
 import { RemoveRoleFromUserUseCase } from '../../application/role/remove-role-from-user.use-case';
+import { userInfo } from 'os';
 
 
 @Controller('users/') // define rota base
@@ -58,6 +63,8 @@ export class UsersController {
         })
     }
 
+    @UseGuards(JwtAuthGuard, PermissionGuard)
+    @RequirePermission('users', 'delete')
     @Delete(':id')
     del(
         @Param('id', ParseIntPipe) id: number
