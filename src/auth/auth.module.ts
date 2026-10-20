@@ -38,7 +38,7 @@ import {ROLE_SERVICE} from '../domain/role/role.contract';
 @Module({
     imports: [
         UsersModule,
-
+        JwtSecurityModule,
         EmailModule,
     ],
 

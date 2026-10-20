@@ -14,7 +14,6 @@ import { PatchUserDto } from '../../application/identity/dto/patch-user.dto';
 import { AssignRolesToUserDto } from '../../application/identity/dto/assign-roles-to-user.dto';
 import { AssignRolesToUserUseCase } from '../../application/role/assign-roles-to-user.use-case';
 import { RemoveRoleFromUserUseCase } from '../../application/role/remove-role-from-user.use-case';
-import { userInfo } from 'os';
 
 
 @Controller('users/') // define rota base
@@ -34,11 +33,15 @@ export class UsersController {
         return this.createUserUseCase.execute(body);
     }
 
+    @UseGuards(JwtAuthGuard, PermissionGuard)
+    @RequirePermission('users', 'get')
     @Get(':id')
     getById(@Param('id', ParseIntPipe) id: string) {
         return this.GetUserByIdUseCase.execute(Number(id));
     }
 
+    @UseGuards(JwtAuthGuard, PermissionGuard)
+    @RequirePermission('users', 'put')
     @Put(':id')
     update(
         @Param('id', ParseIntPipe) id: number,
@@ -51,6 +54,8 @@ export class UsersController {
         })
     }
 
+    @UseGuards(JwtAuthGuard, PermissionGuard)
+    @RequirePermission('users', 'patch')
     @Patch(':id')
     patch(
         @Param('id', ParseIntPipe) id: number,
@@ -73,7 +78,9 @@ export class UsersController {
             id,
         })
     }
-
+    
+    @UseGuards(JwtAuthGuard, PermissionGuard)
+    
     @Post(':id/roles')
     assignRoles(
         @Param('id', ParseIntPipe) id: number,
@@ -85,6 +92,8 @@ export class UsersController {
         )
     }
 
+    @UseGuards(JwtAuthGuard, PermissionGuard)
+    @RequirePermission('users', 'delete')
     @Delete(':id/roles/:roleId')
     removeRole(
         @Param('id', ParseIntPipe) id: number,
