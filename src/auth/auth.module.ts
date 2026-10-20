@@ -6,7 +6,7 @@ import {
     AuthenticateUserUseCase } from '../application/authentication/authenticate-user.user-case'; 
     
 import { UsersModule } from '../users.module'
-import { JwtModule } from '@nestjs/jwt';
+import { JwtSecurityModule } from './jwt-security.module';
 import { ACCESS_TOKEN_SERVICE } from '../application/authentication/access-token';
 import { JwtAccessTokenService } from '../infrastruture/security/jwt-access-token.service';
 import { REFRESH_TOKEN_SERVICE } from '../application/authentication/refresh-token';
@@ -38,13 +38,7 @@ import {ROLE_SERVICE} from '../domain/role/role.contract';
 @Module({
     imports: [
         UsersModule,
-        JwtModule.register({
-            secret: process.env.JWT_SECRET,
-            signOptions: {
-                expiresIn: '60m',
-            }
-        }),
-
+        JwtSecurityModule,
         EmailModule,
     ],
 
@@ -95,7 +89,6 @@ import {ROLE_SERVICE} from '../domain/role/role.contract';
             useClass: RoleServiceImpl,
         },
 
-        JwtAuthGuard,
     ],
 })
 export class AuthModule{}

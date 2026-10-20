@@ -127,6 +127,28 @@ export class UsersRepository implements UserRepository {
             },
         });
     }
+
+    async hasPermission(userId: number, permissionName: string): Promise<boolean> {
+        const user = await this.prisma.user.findFirst({
+            where: {
+                id: userId,
+                roles: {
+                    some: {
+                        rules: {
+                            some: {
+                                name: permissionName,
+                            },
+                        },
+                    },
+                },
+            },
+            select: {
+                id: true,
+            },
+        });
+
+        return user !== null;
+    }
 }
 
 // Repository:

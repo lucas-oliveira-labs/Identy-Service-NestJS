@@ -22,9 +22,14 @@ import { RolesModule } from './role.module';
 import { AssignRolesToUserUseCase } from './application/role/assign-roles-to-user.use-case';
 import { RemoveRoleFromUserUseCase } from './application/role/remove-role-from-user.use-case';
 
+import { JwtSecurityModule } from './auth/jwt-security.module';
+import { PermissionGuard } from './presentation/guards/permission.guard';
 
 @Module({
-    imports: [RolesModule],
+    imports: [
+        RolesModule,
+        JwtSecurityModule
+    ],
 
     controllers: [UsersController],
 
@@ -52,6 +57,7 @@ import { RemoveRoleFromUserUseCase } from './application/role/remove-role-from-u
         DeleteUserByIdCase,
         AssignRolesToUserUseCase,
         RemoveRoleFromUserUseCase,
+        PermissionGuard,
 
     ],
 

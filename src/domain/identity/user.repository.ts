@@ -9,6 +9,8 @@ export interface UserRepository {
 
     assignRoles(userId: number, roleIds: number[]): Promise<void>;
     removeRole(userId: number, roleId: number): Promise<void>;
+
+    hasPermission(userId: number, permissionName: string): Promise<boolean>;
 }
 
 export const USER_REPOSITORY = Symbol('USER_REPOSITORY');
