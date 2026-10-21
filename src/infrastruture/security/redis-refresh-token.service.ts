@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { createHash, randomUUID } from 'crypto';
 import type { StringValue } from 'ms';
 
-import type { RefreshTokenService } from '../../application/authentication/refresh-token';
+import type { RefreshTokenService, ConsumeRefreshTokenResult } from '../../application/authentication/refresh-token';
 import { RedisService } from '../../health/redis.service';
 
 interface RefreshTokenPayload {
@@ -52,6 +52,7 @@ export class RedisRefreshTokenService implements RefreshTokenService {
             JSON.stringify({
                 userId,
                 sessionId,
+                status: 'active',
             }),
             this.ttlSeconds,
         );
@@ -96,6 +97,84 @@ export class RedisRefreshTokenService implements RefreshTokenService {
     async revoke(token: string): Promise<void> {
         await this.redisService.delete(
             this.key(this.hash(token)),
-        )
+        );
+    }
+
+    async consume(token: string): Promise<ConsumeRefreshTokenResult> {
+        const key = this.key(this.hash(token));
+
+        const script = `
+            local value = redis.call('GET', KEYS[1])
+
+            if not value then
+                return { 'missing' }
+            end
+
+            local record = cjson.decode(value)
+
+            if record.status == 'used' then
+                return {
+                    'used',
+                    tostring(record.userId),
+                    record.sessionId
+                }
+            end
+
+            if record.status ~= 'active' then
+                return { 'missing' }
+            end
+
+            record.status = 'used'
+
+            redis.call(
+                'SET',
+                KEYS[1],
+                cjson.encode(record),
+                'KEEPTTL'
+            )
+
+            return {
+                'consumed',
+                tostring(record.userId),
+                record.sessionId
+            }
+        `;
+
+        const result = await this.redisService.eval(
+            script,
+            [key],
+            [],
+        ) as string[];
+
+        if(result[0] === 'missing') {
+            return { status: 'missing'};
+        }
+
+        const userId = Number(result[1]);
+        const sessionId = result[2];
+
+        if(
+            !Number.isInteger(userId) || typeof sessionId !== 'string'
+        ) {
+            return { status : 'missing'};
+        }
+
+        if (result[0] === 'used') {
+            return {
+                status: 'used',
+                userId,
+                sessionId,
+            };
+        }
+
+        if (result[0] === 'consumed') {
+            return {
+                status: 'consumed',
+                userId,
+                sessionId,
+            };
+        }
+
+        return { status: 'missing'};
     }
 }
