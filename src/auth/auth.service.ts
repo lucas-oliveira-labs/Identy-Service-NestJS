@@ -68,22 +68,27 @@ export class AuthService {
             );
         } catch {
             throw new UnauthorizedException(
-                'Invalido ou o refresh token ixpirou',
+                'Invalido ou o refresh token expirou',
             );
         }
 
-        if (payload.type !== 'refresh') {
+        if (payload.type !== 'refresh' || !payload.sessionId || !payload.sub) {
             throw new UnauthorizedException(
-                'Invalido ou o refresh token ixpirou',
+                'Invalido ou o refresh token expirou',
             );
         }
 
-        const refreshTokenData = await this.RefreshTokenService.validate(
+        const refreshTokenData = await this.RefreshTokenService.consume(
             dto.refresh_token,
         );
 
+        if(refreshTokenData.status === 'missing') {
+            throw new UnauthorizedException(
+                'Invalido ou refresh token expirou'
+            );
+        }
+
         if (
-            refreshTokenData === null ||
             refreshTokenData.sessionId !== payload.sessionId ||
             refreshTokenData.userId !== Number(payload.sub)
             
@@ -92,6 +97,12 @@ export class AuthService {
             throw new UnauthorizedException(
                 'Invalido ou refresh token revogado',
             );
+        }
+
+        if(refreshTokenData.status === 'used') {
+            await this.sessionService.revoke(
+                refreshTokenData?.sessionId,
+            )
         }
 
         const sessionId = refreshTokenData.sessionId

@@ -69,4 +69,15 @@ export class RedisService implements OnModuleInit, OnModuleDestroy{
     async removeFromSet(key: string, value: string): Promise<void> {
         await this.client.sRem(key, value);
     }
+
+    async eval(
+        script: string,
+        keys: string[],
+        args: string[],
+    ): Promise<unknown> {
+        return this.client.eval(script, {
+            keys,
+            arguments: args,
+        });
+    }
 }
